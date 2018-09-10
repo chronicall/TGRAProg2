@@ -9,7 +9,7 @@ public class Spaceship {
 	
 	public Spaceship() {
 		this.position = new Point2D(0.0f, 0.0f);
-		this.motion = new Vector2D(4.0f, 3.0f);
+		this.motion = new Vector2D(4.5f, 3.0f);
 		this.rotationAngle = 0.0f;
 		this.rotationSpeed = 0.0f;
 		this.objectSize = 0.0f;

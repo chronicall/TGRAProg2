@@ -22,10 +22,10 @@ public class GraphicsEnvironment {
 	public static void setWindow(float left, float right, float bottom, float top) {
 		float[] pm = new float[16];
 		
-		pm[0] = 2.0f/(right - left); pm[4] = 0.0f; pm[8] = 0.0f; pm[12] = -(right+left)/(right-left);
-		pm[1] = 0.0f; pm[5] = 2.0f / (top-bottom); pm[9] = 0.0f; pm[13] = -(top + bottom) / (top - bottom);
-		pm[2] = 0.0f; pm[6] = 0.0f; pm[10] = 1.0f; pm[14] = 0.0f;
-		pm[3] = 0.0f; pm[7] = 0.0f; pm[11] = 0.0f; pm[15] = 1.0f;
+		pm[0] = 2.0f / (right - left); pm[4] = 0.0f; 				  pm[8] = 0.0f;  pm[12] = -(right + left) / (right - left);
+		pm[1] = 0.0f;				   pm[5] = 2.0f / (top - bottom); pm[9] = 0.0f;  pm[13] = -(top + bottom) / (top - bottom);
+		pm[2] = 0.0f; 				   pm[6] = 0.0f; 				  pm[10] = 1.0f; pm[14] = 0.0f;
+		pm[3] = 0.0f; 				   pm[7] = 0.0f; 				  pm[11] = 0.0f; pm[15] = 1.0f;
 		
 		projectionMatrix = BufferUtils.newFloatBuffer(16);
 		projectionMatrix.put(pm);
