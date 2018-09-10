@@ -20,8 +20,8 @@
     - [ ] When two asteroids collide they should break into smaller (new) asteroids and shoot out into different directions
       - [ ] Ideally these can then collide with each other, during the original collision, and further break up
 - [ ] Background
-  - [ ] Black background with stars in the background
+  - [x] Black background with stars in the background
     - [x] These stars should be white and in different sizes
-    - [ ] These stars should be in _every_ quarter, not just x > 0 and y > 0
-    - [ ] With enough time, add parallax scrolling when moving the ship
-      - [ ] Make the stars seem to move
+    - [x] These stars should be in _every_ quarter, not just x > 0 and y > 0
+  - [ ] With enough time, add parallax scrolling when moving the ship
+    - [ ] Make the stars seem to move

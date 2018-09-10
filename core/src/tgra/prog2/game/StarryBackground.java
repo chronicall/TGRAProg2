@@ -7,22 +7,21 @@ public class StarryBackground {
 	
 	public StarryBackground(int numberOfStars) {
 		this.stars = new ArrayList<Star>();
-		
 		for (int i = 0; i < numberOfStars; i++) {
-			stars.add(new Star((float)Math.random() * 100 + 1, (float)Math.random() * 100 + 1));
+			stars.add(new Star());
 		}
 	}
 	
 	public void update() {
-		
+		// Update every star in the sky.
+		// Maybe stick with having it in the same loop in display
+		// rather than loop over the list twice..
 	}
 
 	public void display() {
 		ModelMatrix.main.pushMatrix();
 		
 		GraphicsEnvironment.setColour(1.0f, 1.0f, 1.0f);
-		// Draw a bunch of circle graphics. All of whom are white.
-		
 		// Draw every star
 		for (Star star : stars) {
 			//star.update();
