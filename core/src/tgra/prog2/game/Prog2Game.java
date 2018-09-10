@@ -12,6 +12,8 @@ public class Prog2Game extends ApplicationAdapter {
 	private int vertexShaderID;
 	private int fragmentShaderID;
 	
+	private StarryBackground background;
+	
 	private Spaceship spaceship1;
 	private Spaceship spaceship2;
 
@@ -61,8 +63,13 @@ public class Prog2Game extends ApplicationAdapter {
 		
 		ModelMatrix.main = new ModelMatrix();
 		
+		// Set up background.
+		background = new StarryBackground(100);
+		
 		spaceship1 = new Spaceship();
 		spaceship2 = new Spaceship();
+		
+		// Set up asteroids.
 	}
 	
 	public void update () {
@@ -80,14 +87,20 @@ public class Prog2Game extends ApplicationAdapter {
 	}
 	
 	public void display() {
-		GraphicsEnvironment.setWindow(-10, 10, -10, 10);
+		GraphicsEnvironment.setWindow(-100, 100, -100, 100);
 		
-		Gdx.gl.glClearColor(0.0f, 0.3f, 0.0f, 1.0f);
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		ModelMatrix.main.loadIdentityMatrix();
 		
+		// Display background, currently just a black window.
+		// TODO: Add a starry background.
+		background.display();
+		
 		spaceship1.display();
+		
+		// Display asteroids.
 		
 		// Adds another spaceship, but local coords with the shitty collision makes it all weird.
 //		ModelMatrix.main.pushMatrix();

@@ -9,20 +9,20 @@ public class Spaceship {
 	
 	public Spaceship() {
 		this.position = new Point2D(0.0f, 0.0f);
-		this.motion = new Vector2D(4.5f, 3.0f);
+		this.motion = new Vector2D(18.5f, 15.0f);
 		this.rotationAngle = 0.0f;
 		this.rotationSpeed = 0.0f;
-		this.objectSize = 0.0f;
+		this.objectSize = 3.5f;
 	}
 	
 	public void update(float deltaTime, int speedMultiplier) {
 		// Reverses the direction of the spaceship if "colliding" with the edge of the window.
 		// TODO: Just stop the movement if at the edge, when manual movement is implemented.
 		//		 Currently uses the center of the "command module" to determine the collision.
-		if (this.position.x + 1.0f >= 10 || this.position.x - 1.0f <= -10) {
+		if (this.position.x + 1.0f >= 100 || this.position.x - 1.0f <= -100) {
 			this.motion.x *= -1;
 		}
-		if (this.position.y + 1.0f >= 10 || this.position.y - 1.0f <= -10) {
+		if (this.position.y + 1.0f >= 100 || this.position.y - 1.0f <= -100) {
 			this.motion.y *= -1;
 		}
 		this.position.x += this.motion.x * speedMultiplier * deltaTime;
@@ -30,7 +30,7 @@ public class Spaceship {
 		
 		this.rotationAngle += rotationSpeed * deltaTime;
 		
-		this.objectSize = 1.0f;
+		//this.objectSize = 1.0f;
 	}
 	
 	public void display() {
