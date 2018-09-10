@@ -22,12 +22,10 @@ public class Matrix {
 	}
 
 	public void loadIdentityMatrix() {
-
-	// m0  m4  m8  m12
-	// m1  m5  m9  m13
-	// m2  m6  m10  m14
-	// m3  m7  m11  m15
-
+		// m0  m4  m8  m12
+		// m1  m5  m9  m13
+		// m2  m6  m10  m14
+		// m3  m7  m11  m15
 		matrix.put(0, 1.0f);
 		matrix.put(1, 0.0f);
 		matrix.put(2, 0.0f);
@@ -47,6 +45,7 @@ public class Matrix {
 	}
 
 	public void addTransformation(float[] M2) {
+		// TODO: Optimize this shit.
 		this.Mtmp[0] = matrix.get(0)*M2[0] + matrix.get(4)*M2[1] + matrix.get(8)*M2[2] + matrix.get(12)*M2[3];
 		this.Mtmp[1] = matrix.get(1)*M2[0] + matrix.get(5)*M2[1] + matrix.get(9)*M2[2] + matrix.get(13)*M2[3];
 		this.Mtmp[2] = matrix.get(2)*M2[0] + matrix.get(6)*M2[1] + matrix.get(10)*M2[2] + matrix.get(14)*M2[3];
@@ -83,6 +82,7 @@ public class Matrix {
 	}
 
 	public void addTransformation(FloatBuffer M2) {
+		// TODO: Optimize this shit.
 		this.Mtmp[0] = matrix.get(0)*M2.get(0) + matrix.get(4)*M2.get(1) + matrix.get(8)*M2.get(2) + matrix.get(12)*M2.get(3);
 		this.Mtmp[1] = matrix.get(1)*M2.get(0) + matrix.get(5)*M2.get(1) + matrix.get(9)*M2.get(2) + matrix.get(13)*M2.get(3);
 		this.Mtmp[2] = matrix.get(2)*M2.get(0) + matrix.get(6)*M2.get(1) + matrix.get(10)*M2.get(2) + matrix.get(14)*M2.get(3);
@@ -120,6 +120,7 @@ public class Matrix {
 
 	public void pushMatrix()
 	{
+		// TODO: Optimize this shit.
 		Mtmp[0] = matrix.get(0);
 		Mtmp[1] = matrix.get(1);
 		Mtmp[2] = matrix.get(2);
@@ -145,6 +146,7 @@ public class Matrix {
 	
 	public void popMatrix()
 	{
+		// TODO: Optimize this shit.
 		FloatBuffer tmp = matrixStack.pop();
 		matrix.put(0, tmp.get(0));
 		matrix.put(1, tmp.get(1));

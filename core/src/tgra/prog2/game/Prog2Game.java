@@ -12,8 +12,8 @@ public class Prog2Game extends ApplicationAdapter {
 	private int vertexShaderID;
 	private int fragmentShaderID;
 	
-	private Point2D position;
-	private Vector2D motion;
+	private Spaceship spaceship1;
+	private Spaceship spaceship2;
 
 	@Override
 	public void create () {
@@ -55,36 +55,28 @@ public class Prog2Game extends ApplicationAdapter {
 
 		//COLOR IS SET HERE
 		Gdx.gl.glUniform4f(GraphicsEnvironment.colorLoc, 0.7f, 0.2f, 0, 1);
-		
-		this.position = new Point2D(0.0f, 0.0f);
-		this.motion = new Vector2D(3.5f, 2.0f);
 
 		BoxGraphic.create();
 		CircleGraphic.create();
 		
 		ModelMatrix.main = new ModelMatrix();
+		
+		spaceship1 = new Spaceship();
+		spaceship2 = new Spaceship();
 	}
 	
 	public void update () {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
-		// Speed multiplier just for fun
+		// Speed multiplier just for fun.
 		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 			this.speedMultiplier = 5;
 		} else {
 			this.speedMultiplier = 1;
 		}
 		
-		// If bouncing box reaches an edge of the viewport, change the direction
-		// on that axis
-		if (this.position.x + 1.0f >= 10 || this.position.x - 1.0f <= -10) {
-			this.motion.x *= -1;
-		}
-		if (this.position.y + 1.0f >= 10 || this.position.y - 1.0f <= -10) {
-			this.motion.y *= -1;
-		}
-		this.position.x += this.motion.x * this.speedMultiplier * deltaTime;
-		this.position.y += this.motion.y * this.speedMultiplier * deltaTime;
+		spaceship1.update(deltaTime, speedMultiplier);
+		spaceship2.update(deltaTime, speedMultiplier + 2);
 	}
 	
 	public void display() {
@@ -95,16 +87,15 @@ public class Prog2Game extends ApplicationAdapter {
 		
 		ModelMatrix.main.loadIdentityMatrix();
 		
-		ModelMatrix.main.addTranslation(position.x, position.y, 0.0f);
-		ModelMatrix.main.addScale(0.8f, 1.0f, 1.0f);
-		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
+		spaceship1.display();
 		
-		GraphicsEnvironment.setColour(1.0f, 0.0f, 0.0f);
-		CircleGraphic.drawSolidCircle();
-		GraphicsEnvironment.setColour(0.4f, 0.0f, 0.0f);
-		BoxGraphic.draw();
-		GraphicsEnvironment.setColour(0.8f, 0.8f, 0.0f);
-		CircleGraphic.drawOutlinedCircle();
+		// Adds another spaceship, but local coords with the shitty collision makes it all weird.
+//		ModelMatrix.main.pushMatrix();
+		
+//		ModelMatrix.main.addTranslation(3.0f, 4.0f, 0.0f);
+//		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
+//		
+//		spaceship2.display();
 	}
 
 	@Override
