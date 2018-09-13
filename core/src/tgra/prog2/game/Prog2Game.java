@@ -1,5 +1,10 @@
 package tgra.prog2.game;
 
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -16,6 +21,9 @@ public class Prog2Game extends ApplicationAdapter {
 	
 	private Spaceship spaceship1;
 	private Spaceship spaceship2;
+	
+	public ArrayList<Asteroid> asteroids;
+	private int numAsteroids;
 
 	@Override
 	public void create () {
@@ -70,6 +78,11 @@ public class Prog2Game extends ApplicationAdapter {
 		spaceship2 = new Spaceship();
 		
 		// Set up asteroids.
+		numAsteroids = 10; 
+		asteroids = new ArrayList<Asteroid>();
+		for(int i = 0; i < numAsteroids; i++) {
+			asteroids.add(new Asteroid());
+		}
 	}
 	
 	public void update () {
@@ -84,6 +97,60 @@ public class Prog2Game extends ApplicationAdapter {
 		
 		spaceship1.update(deltaTime, speedMultiplier);
 		spaceship2.update(deltaTime, speedMultiplier + 2);
+		 
+		ListIterator<Asteroid> asteroidIterator = asteroids.listIterator();
+		Asteroid currAsteroid;
+		while (asteroidIterator.hasNext()) {
+			currAsteroid = asteroidIterator.next();
+			
+			currAsteroid.update(deltaTime);
+		}
+		
+		
+		ArrayList<Asteroid> asteroidsTmp = new ArrayList<Asteroid>();
+		ArrayList<Asteroid> asteroidsToAdd = new ArrayList<Asteroid>();
+		Asteroid currAsteroidCheck;
+		asteroidsTmp.addAll(asteroids);
+		asteroidIterator = asteroids.listIterator();
+		while (asteroidIterator.hasNext()) {
+			currAsteroid = asteroidIterator.next();
+			boolean collision = false;
+			
+			asteroidsTmp = currAsteroid.detectCollision(asteroidsTmp);
+			
+			/*if(collision)
+			{
+					numAsteroids++;
+					
+					asteroidIterator.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2));
+					asteroidIterator.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2));
+					
+					//numAsteroids++;
+					//asteroidIterator.add(new Asteroid(currAsteroidCheck.position.x, currAsteroidCheck.position.y, currAsteroidCheck.objectSize/2));
+					//asteroidIterator.add(new Asteroid(currAsteroidCheck.position.x, currAsteroidCheck.position.y, currAsteroidCheck.objectSize/2));
+			
+					asteroidsToRemove.add(currAsteroid);
+					asteroidsToRemove.add(currAsteroidCheck);
+			}	
+			*/	
+			//}
+		}
+		
+		asteroids.removeAll(asteroids);
+		asteroids.addAll(asteroidsTmp);
+		/*
+
+		asteroidIterator = asteroidsToRemove.listIterator();
+		while (asteroidIterator.hasNext()) {
+			currAsteroid = asteroidIterator.next();
+			asteroids.remove(currAsteroid);
+		}*/
+		/*
+		asteroidIterator = asteroidsToAdd.iterator();
+		while (asteroidIterator.hasNext()) {
+			currAsteroid = asteroidIterator.next();
+			asteroids.add(currAsteroid);
+		}*/
 	}
 	
 	public void display() {
@@ -101,6 +168,13 @@ public class Prog2Game extends ApplicationAdapter {
 		spaceship1.display();
 		
 		// Display asteroids.
+		Iterator<Asteroid> asteroidIterator = asteroids.iterator();
+		Asteroid currAsteroid;
+		while (asteroidIterator.hasNext()) {
+			currAsteroid = asteroidIterator.next();
+			
+			currAsteroid.display();
+		}
 		
 		// Adds another spaceship, but local coords with the shitty collision makes it all weird.
 //		ModelMatrix.main.pushMatrix();
