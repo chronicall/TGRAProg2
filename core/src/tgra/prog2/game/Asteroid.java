@@ -11,31 +11,24 @@ public class Asteroid {
 	float objectSize;
 	float invisTime;
 	
-	public Asteroid(float x, float y, float size, float mx, float my) {		
-		int quarter = (int)(Math.random() * 100 + 1);
-
-		if (quarter > 25 && quarter <= 50) {// x > 0, y < 0
-			y *= -1;
+	public Asteroid(float x, float y, float size, float mx, float my) {	
+		while(my > 15) {
+			my = my/2;
 		}
-		if (quarter > 50 && quarter <= 75) { // x < 0, y > 0
-			x *= -1;
+		while(mx > 15) {
+			mx = mx/2;
 		}
-		if (quarter > 75) { // x < 0, y < 0
-			x *= -1;
-			y *= -1;
-		}
-		
 		this.position = new Point2D(x, y);
 		this.motion = new Vector2D(mx, my);
 		this.rotationAngle = 0.0f;
 		this.rotationSpeed = 0.2f;
 		this.objectSize = size;
-		this.invisTime = 2.0f;
+		this.invisTime = 10.0f;
 	}
 	
 	public Asteroid() {
-		float x = (float) (Math.random() * (100));
-		float y = (float) (Math.random() * (100));		
+		float x = (float) (Math.random() * (95));
+		float y = (float) (Math.random() * (95));		
 		float mx = (float) (Math.random() * (20-2));
 		float my = (float) (Math.random() * (20-2));
 		
@@ -43,13 +36,17 @@ public class Asteroid {
 
 		if (quarter > 25 && quarter <= 50) {// x > 0, y < 0
 			y *= -1;
+			mx *= -1;
 		}
 		if (quarter > 50 && quarter <= 75) { // x < 0, y > 0
 			x *= -1;
+			my *= -1;
 		}
 		if (quarter > 75) { // x < 0, y < 0
 			x *= -1;
 			y *= -1;
+			mx *= -1;
+			my *= -1;
 		}
 		
 		this.position = new Point2D(x, y);
@@ -80,7 +77,7 @@ public class Asteroid {
 		
 	public void display() {
 		
-		if(this.invisTime > 0f) {
+		if(this.invisTime > 5f) {
 			return;
 		}
 		
@@ -104,6 +101,7 @@ public class Asteroid {
 		ArrayList<Asteroid> asteroidsToRm = new ArrayList<Asteroid>();
 		
 		if(this.invisTime > 0f) {
+			//System.out.println("invis");
 			return asteroids;
 		}
 		
@@ -123,15 +121,31 @@ public class Asteroid {
 				//System.out.println("object: "+ this.objectSize);
 				//System.out.println("object curr: "+ currAsteroid.objectSize);
 				
-				if(currAsteroid.objectSize > 1.5) {
-					asteroidsToAdd.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2, -currAsteroid.motion.x, -currAsteroid.motion.y));
-					asteroidsToAdd.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2, currAsteroid.motion.x, currAsteroid.motion.y));
+				int i = 2;
+				
+				if(currAsteroid.objectSize > 1.5 && currAsteroid.objectSize >= this.objectSize) {
+					//System.out.println("add");
+					for(int j = 0; j<=i; j++) {
+						asteroidsToAdd.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2, 
+								currAsteroid.motion.x + 15*j, currAsteroid.motion.y + 15*j));	
+						asteroidsToAdd.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2, 
+								currAsteroid.motion.x- 15*j, -currAsteroid.motion.y - 15*j));	
+						
+					
+					}
 				}
 				
-				if(this.objectSize > 1.5) {
+				if(this.objectSize > 1.5 && currAsteroid.objectSize < this.objectSize) {
 					//numAsteroids++;
-					asteroidsToAdd.add(new Asteroid(this.position.x, this.position.y, this.objectSize/2, -this.motion.x, -this.motion.y));
-					asteroidsToAdd.add(new Asteroid(this.position.x, this.position.y, this.objectSize/2, this.motion.x, this.motion.y));
+					//asteroidsToAdd.add(new Asteroid(-this.position.x, this.position.y, this.objectSize/2, this.motion.x, this.motion.y));
+					//asteroidsToAdd.add(new Asteroid(-this.position.x, this.position.y, this.objectSize/2, this.motion.x, this.motion.y));
+					for(int j = 0; j<=i; j++) {
+						asteroidsToAdd.add(new Asteroid(-this.position.x, this.position.y, this.objectSize/2, 
+								15*j + this.motion.x, this.motion.y + 15*j));
+						asteroidsToAdd.add(new Asteroid(-this.position.x, this.position.y, this.objectSize/2, 
+								this.motion.x - 15*j, -this.motion.y - 15*j));
+					}
+				
 				}
 		
 				asteroidsToRm.add(currAsteroid);
