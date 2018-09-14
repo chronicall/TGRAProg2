@@ -102,8 +102,8 @@ public class Asteroid {
 				continue;
 			}
 			
-			if (Math.abs((this.position.x + this.objectSize) - (currAsteroid.position.x + currAsteroid.objectSize)) <= this.objectSize
-					&& Math.abs((this.position.y + this.objectSize) - (currAsteroid.position.y + currAsteroid.objectSize)) <= this.objectSize) {
+			if (Math.pow(this.position.x - currAsteroid.position.x, 2) + Math.pow(this.position.y - currAsteroid.position.y, 2) 
+			 <= Math.pow(currAsteroid.objectSize + this.objectSize, 2)) {
 				
 				collision = true;
 				
