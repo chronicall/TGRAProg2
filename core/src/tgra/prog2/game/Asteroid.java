@@ -9,6 +9,7 @@ public class Asteroid {
 	float rotationAngle;
 	private float rotationSpeed;
 	float objectSize;
+	float invisTime;
 	
 	public Asteroid(float x, float y, float size, float mx, float my) {		
 		int quarter = (int)(Math.random() * 100 + 1);
@@ -29,6 +30,7 @@ public class Asteroid {
 		this.rotationAngle = 0.0f;
 		this.rotationSpeed = 0.2f;
 		this.objectSize = size;
+		this.invisTime = 2.0f;
 	}
 	
 	public Asteroid() {
@@ -66,13 +68,22 @@ public class Asteroid {
 		if (this.position.y + this.objectSize >= 100 || this.position.y - this.objectSize <= -100) {
 			this.motion.y *= -1;
 		}
-		this.position.x += this.motion.x * deltaTime;
-		this.position.y += this.motion.y * deltaTime;
 		
-		this.rotationAngle += rotationSpeed * deltaTime;
+		this.position.x 	+= this.motion.x * deltaTime;
+		this.position.y 	+= this.motion.y * deltaTime;		
+		this.rotationAngle 	+= rotationSpeed * deltaTime;
+		
+		if(this.invisTime > 0f) {
+			this.invisTime 	-= 0.5f;
+		}
 	}
 		
 	public void display() {
+		
+		if(this.invisTime > 0f) {
+			return;
+		}
+		
 		ModelMatrix.main.pushMatrix();
 		
 		ModelMatrix.main.addTranslation(position.x, position.y, 0.0f);
@@ -92,25 +103,25 @@ public class Asteroid {
 		ArrayList<Asteroid> asteroidsToAdd = new ArrayList<Asteroid>();
 		ArrayList<Asteroid> asteroidsToRm = new ArrayList<Asteroid>();
 		
+		if(this.invisTime > 0f) {
+			return asteroids;
+		}
+		
 		for(Asteroid currAsteroid: asteroids) {
 			
-			if(currAsteroid == this) {
+			if(currAsteroid == this || asteroidsToRm.contains(currAsteroid) || currAsteroid.invisTime > 0f) {
 				continue;
 			}	
-			
-			if(asteroidsToRm.contains(currAsteroid)) {
-				continue;
-			}
-			
+						
 			if (Math.pow(this.position.x - currAsteroid.position.x, 2) + Math.pow(this.position.y - currAsteroid.position.y, 2) 
-			 <= Math.pow(currAsteroid.objectSize + this.objectSize, 2)) {
+			 	<= Math.pow(currAsteroid.objectSize + this.objectSize, 2)) {
 				
 				collision = true;
 				
 				//System.out.println("x: " + ((this.position.x + this.objectSize) - (currAsteroid.position.x + currAsteroid.objectSize)));
 				//System.out.println("y: " + ((this.position.y + this.objectSize) - (currAsteroid.position.y + currAsteroid.objectSize)));
-				System.out.println("object: "+ this.objectSize);
-				System.out.println("object curr: "+ currAsteroid.objectSize);
+				//System.out.println("object: "+ this.objectSize);
+				//System.out.println("object curr: "+ currAsteroid.objectSize);
 				
 				if(currAsteroid.objectSize > 1.5) {
 					asteroidsToAdd.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2, -currAsteroid.motion.x, -currAsteroid.motion.y));
