@@ -12,8 +12,8 @@ public class BoxGraphic {
 	public static void create() {
 		float[] array = {-0.5f, -0.5f,
 						-0.5f, 0.5f,
-						0.5f, -0.5f,
-						0.5f, 0.5f};
+						0.5f, 0.5f,
+						0.5f, -0.5f};
 
 		vertexBuffer = BufferUtils.newFloatBuffer(8);
 		vertexBuffer.put(array);

@@ -16,4 +16,8 @@ public class Point3D {
 		this.y = y;
 		this.z = z;
 	}
+	
+	public Point3D add(Vector3D v) {
+		return new Point3D(this.x + v.x, this.y + v.y, this.z + v.z);
+	}
 }

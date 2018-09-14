@@ -19,8 +19,7 @@ public class Prog2Game extends ApplicationAdapter {
 	
 	private StarryBackground background;
 	
-	private Spaceship spaceship1;
-	private Spaceship spaceship2;
+	private Spaceship spaceship;
 	
 	public ArrayList<Asteroid> asteroids;
 	private int numAsteroids;
@@ -74,8 +73,8 @@ public class Prog2Game extends ApplicationAdapter {
 		// Set up background.
 		background = new StarryBackground(100);
 		
-		spaceship1 = new Spaceship();
-		spaceship2 = new Spaceship();
+		// Set up spaceship.
+		spaceship = new Spaceship();
 		
 		// Set up asteroids.
 		numAsteroids = 10; 
@@ -95,8 +94,7 @@ public class Prog2Game extends ApplicationAdapter {
 			this.speedMultiplier = 1;
 		}
 		
-		spaceship1.update(deltaTime, speedMultiplier);
-		spaceship2.update(deltaTime, speedMultiplier + 2);
+		spaceship.update(deltaTime, speedMultiplier);
 		 
 		ListIterator<Asteroid> asteroidIterator = asteroids.listIterator();
 		Asteroid currAsteroid;
@@ -151,6 +149,9 @@ public class Prog2Game extends ApplicationAdapter {
 			currAsteroid = asteroidIterator.next();
 			asteroids.add(currAsteroid);
 		}*/
+
+		
+		background.update(deltaTime);
 	}
 	
 	public void display() {
@@ -161,11 +162,10 @@ public class Prog2Game extends ApplicationAdapter {
 		
 		ModelMatrix.main.loadIdentityMatrix();
 		
-		// Display background, currently just a black window.
-		// TODO: Add a starry background.
+		// Display background.
 		background.display();
 		
-		spaceship1.display();
+		spaceship.display();
 		
 		// Display asteroids.
 		Iterator<Asteroid> asteroidIterator = asteroids.iterator();

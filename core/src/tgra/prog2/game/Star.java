@@ -26,11 +26,19 @@ public class Star {
 		}
 	}
 
-	public void update() {
+	public void update(float deltaTime) {
 		// Update the position of a star to imitate parallax scrolling.
 		// This needs to be uniform with every star in the sky, so need to have some
 		// factor that makes them move in a uniform way. Need to use the same coord system
 		// and move them by the same vector.
+		if (this.position.x >= 100) {
+			this.position.x = -100;
+		}
+		if (this.position.y >= 100) {
+			this.position.y = -100;
+		}
+		this.position.x += 0.2f * deltaTime;
+		this.position.y += 0.2f * deltaTime;
 	}
 	
 	public void display() {

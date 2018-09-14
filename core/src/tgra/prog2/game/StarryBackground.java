@@ -12,10 +12,13 @@ public class StarryBackground {
 		}
 	}
 	
-	public void update() {
+	public void update(float deltaTime) {
 		// Update every star in the sky.
 		// Maybe stick with having it in the same loop in display
 		// rather than loop over the list twice..
+		for (Star star : stars) {
+			star.update(deltaTime);
+		}
 	}
 
 	public void display() {

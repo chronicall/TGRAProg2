@@ -23,14 +23,14 @@ public class ModelMatrix extends Matrix {
 		return new Vector3D(matrix.get(8), matrix.get(9), matrix.get(10));
 	}
 	
-	public Vector3D getOrigin() {
-		return new Vector3D(matrix.get(12), matrix.get(13), matrix.get(14));
+	public Point3D getOrigin() {
+		return new Point3D(matrix.get(12), matrix.get(13), matrix.get(14));
 	}
 	
 	public void addTranslationBaseCoords(float Tx, float Ty, float Tz) {
 		matrix.put(12, matrix.get(12) + Tx);
-		matrix.put(13, matrix.get(13) + Tx);
-		matrix.put(14, matrix.get(14) + Tx);
+		matrix.put(13, matrix.get(13) + Ty);
+		matrix.put(14, matrix.get(14) + Tz);
 	}
 	
 	public void addTranslation(float Tx, float Ty, float Tz) {

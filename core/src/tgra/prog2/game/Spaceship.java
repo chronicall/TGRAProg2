@@ -1,65 +1,89 @@
 package tgra.prog2.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+
 public class Spaceship {
-	private Point2D position;
-	private Vector2D motion;
-	private float rotationAngle;
-	private float rotationSpeed;
-	private float objectSize;
+	private ModelMatrix origin;
+	private Vector3D velocity;
 	
 	public Spaceship() {
-		this.position = new Point2D(0.0f, 0.0f);
-		this.motion = new Vector2D(18.5f, 15.0f);
-		this.rotationAngle = 0.0f;
-		this.rotationSpeed = 0.0f;
-		this.objectSize = 3.5f;
+		this.origin = new ModelMatrix();
+		this.origin.loadIdentityMatrix();
+		this.origin.addScale(3.5f, 3.5f, 1.0f);
+		
+		this.velocity = new Vector3D();
+	}
+	
+	public void detectCollisions() {
 	}
 	
 	public void update(float deltaTime, int speedMultiplier) {
-		// Reverses the direction of the spaceship if "colliding" with the edge of the window.
-		// TODO: Just stop the movement if at the edge, when manual movement is implemented.
-		//		 Currently uses the center of the "command module" to determine the collision.
-		if (this.position.x + 1.0f >= 100 || this.position.x - 1.0f <= -100) {
-			this.motion.x *= -1;
-		}
-		if (this.position.y + 1.0f >= 100 || this.position.y - 1.0f <= -100) {
-			this.motion.y *= -1;
-		}
-		this.position.x += this.motion.x * speedMultiplier * deltaTime;
-		this.position.y += this.motion.y * speedMultiplier * deltaTime;
+		// TODO: Check for collision with the edges
 		
-		this.rotationAngle += rotationSpeed * deltaTime;
+		// TODO: Check for other collisions, i.e. with asteroids.
+		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+			this.origin.addRoatationZ(180.0f * deltaTime);
+		}
+		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+			this.origin.addRoatationZ(-180.0f * deltaTime);
+		}
 		
-		//this.objectSize = 1.0f;
+		if (Gdx.input.isKeyPressed(Keys.W)) {
+			Vector3D facing = this.origin.getB();
+			this.velocity.x += facing.x * deltaTime * 10.0f;
+			this.velocity.y += facing.y * deltaTime * 10.0f;
+		}
+		if (Gdx.input.isKeyPressed(Keys.S)) {
+			Vector3D facing = this.origin.getB();
+			this.velocity.x -= facing.x * deltaTime * 10.0f;
+			this.velocity.y -= facing.y * deltaTime * 10.0f;
+		}
+	
+		this.origin.addTranslationBaseCoords(velocity.x * deltaTime, velocity.y * deltaTime, 0.0f);
 	}
 	
 	public void display() {
 		ModelMatrix.main.pushMatrix();
 		
-		ModelMatrix.main.addTranslation(position.x, position.y, 0.0f);
-		ModelMatrix.main.addScale(objectSize - 0.2f, objectSize, 1.0f);
-		ModelMatrix.main.addRoatationZ(this.rotationAngle);
+		ModelMatrix.main.addTransformation(origin.matrix);
+		
 		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
 		
 		// "Command module" of the spaceship.
 		GraphicsEnvironment.setColour(1.0f, 0.0f, 0.0f);
 		CircleGraphic.drawSolidCircle();
-		
-		GraphicsEnvironment.setColour(0.4f, 0.0f, 0.0f);
-		BoxGraphic.draw();
-		
+
 		GraphicsEnvironment.setColour(0.8f, 0.8f, 0.0f);
 		CircleGraphic.drawOutlinedCircle();
 		
 		ModelMatrix.main.pushMatrix();
-		
-		// "Chassis" of the spaceship.
-		ModelMatrix.main.addTranslation(0.0f, -2.0f, 0.0f);
-		ModelMatrix.main.addScale(1.5f, 2.0f, 1.0f);
+		ModelMatrix.main.addScale(2.5f, 0.5f, 1.0f);
 		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
 		
-		GraphicsEnvironment.setColour(0.4f, 0.0f, 0.0f);
+		GraphicsEnvironment.setColour(0.0f, 0.0f, 1.0f);
 		BoxGraphic.draw();
+		ModelMatrix.main.popMatrix();
+		
+		ModelMatrix.main.pushMatrix();
+		ModelMatrix.main.addTranslation(1.3f, 0.5f, 0.0f);
+		ModelMatrix.main.addRoatationZ(-110);
+		ModelMatrix.main.addScale(2.25f, 0.35f, 1.0f);
+		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
+		
+		GraphicsEnvironment.setColour(0.0f, 0.0f, 1.0f);
+		BoxGraphic.draw();
+		ModelMatrix.main.popMatrix();
+		
+		ModelMatrix.main.pushMatrix();
+		ModelMatrix.main.addTranslation(-1.3f, 0.5f, 0.0f);
+		ModelMatrix.main.addRoatationZ(110);
+		ModelMatrix.main.addScale(2.25f, 0.35f, 1.0f);
+		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
+		
+		GraphicsEnvironment.setColour(0.0f, 0.0f, 1.0f);
+		BoxGraphic.draw();
+		ModelMatrix.main.popMatrix();
 		
 		ModelMatrix.main.popMatrix();
 	}

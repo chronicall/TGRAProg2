@@ -80,19 +80,8 @@ public class Asteroid {
 		ModelMatrix.main.addRoatationZ(this.rotationAngle);
 		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
 		
-		// "Command module" of the asteroid.
 		GraphicsEnvironment.setColour(0.5f, 0.5f, 0.5f);
 		CircleGraphic.drawSolidCircle();
-		
-		//ModelMatrix.main.pushMatrix();
-		
-		// "Chassis" of the asteroid.
-		/*ModelMatrix.main.addTranslation(0.0f, -2.0f, 0.0f);
-		ModelMatrix.main.addScale(1.5f, 2.0f, 1.0f);
-		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
-		
-		GraphicsEnvironment.setColour(0.5f, 0.5f, 0.5f);
-		CircleGraphic.drawSolidCircle();*/
 		
 		ModelMatrix.main.popMatrix();
 	}
