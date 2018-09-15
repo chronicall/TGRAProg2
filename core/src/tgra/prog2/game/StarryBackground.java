@@ -13,9 +13,6 @@ public class StarryBackground {
 	}
 	
 	public void update(float deltaTime) {
-		// Update every star in the sky.
-		// Maybe stick with having it in the same loop in display
-		// rather than loop over the list twice..
 		for (Star star : stars) {
 			star.update(deltaTime);
 		}
@@ -25,9 +22,7 @@ public class StarryBackground {
 		ModelMatrix.main.pushMatrix();
 		
 		GraphicsEnvironment.setColour(1.0f, 1.0f, 1.0f);
-		// Draw every star
 		for (Star star : stars) {
-			//star.update();
 			star.display();
 		}
 		

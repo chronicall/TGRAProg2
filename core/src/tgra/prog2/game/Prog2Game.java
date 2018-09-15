@@ -1,17 +1,12 @@
 package tgra.prog2.game;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ListIterator;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 
 public class Prog2Game extends ApplicationAdapter {
-	private int speedMultiplier;
 
 	private int renderingProgramID;
 	private int vertexShaderID;
@@ -26,8 +21,6 @@ public class Prog2Game extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		this.speedMultiplier = 1;
-
 		String vertexShaderString;
 		String fragmentShaderString;
 
@@ -65,91 +58,89 @@ public class Prog2Game extends ApplicationAdapter {
 		//COLOR IS SET HERE
 		Gdx.gl.glUniform4f(GraphicsEnvironment.colorLoc, 0.7f, 0.2f, 0, 1);
 
+		// Initial set up of objects.
 		BoxGraphic.create();
 		CircleGraphic.create();
 		
 		ModelMatrix.main = new ModelMatrix();
 		
-		// Set up background.
-		background = new StarryBackground(100);
+		this.background = new StarryBackground(250);
 		
-		// Set up spaceship.
-		spaceship = new Spaceship();
+		this.spaceship = new Spaceship();
 		
-		// Set up asteroids.
-		numAsteroids = 10; 
-		asteroids = new ArrayList<Asteroid>();
-		for(int i = 0; i < numAsteroids; i++) {
-			asteroids.add(new Asteroid());
+		this.numAsteroids = 6;
+		this.asteroids = new ArrayList<Asteroid>();
+		for(int i = 0; i < this.numAsteroids; i++) {
+			this.asteroids.add(new Asteroid());
+		}
+	}
+	
+	// Called when the ship is destroyed and restarts the "level".
+	public void resetLevel() {
+		this.spaceship = new Spaceship();
+		
+		this.asteroids = new ArrayList<Asteroid>();
+		for(int i = 0; i < this.numAsteroids; i++) {
+			this.asteroids.add(new Asteroid());
+		}
+	}
+	
+	// Called when there are no asteroids left of this level.
+	// The next level has 2 more asteroids than the previous.
+	public void nextLevel() {
+		this.spaceship = new Spaceship();
+		this.numAsteroids += 2;
+		this.asteroids = new ArrayList<Asteroid>();
+		for(int i = 0; i < this.numAsteroids; i++) {
+			this.asteroids.add(new Asteroid());
 		}
 	}
 	
 	public void update () {
+		if (asteroids.size() == 0) {
+			this.nextLevel();
+		}
+		
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
-		// Speed multiplier just for fun.
-		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
-			this.speedMultiplier = 5;
-		} else {
-			this.speedMultiplier = 1;
+		spaceship.update(deltaTime);
+		
+		// TODO: Optimize to not check every asteroid, only areas of the screen that
+		// 		 could possibly end up with a collision happening.
+		for (Asteroid asteroid : asteroids) {
+			asteroid.update(deltaTime);
+			if (spaceship.detectCollision(asteroid)) {
+				this.resetLevel();
+			}
 		}
 		
-		spaceship.update(deltaTime, speedMultiplier);
-		 
-		ListIterator<Asteroid> asteroidIterator = asteroids.listIterator();
-		Asteroid currAsteroid;
-		while (asteroidIterator.hasNext()) {
-			currAsteroid = asteroidIterator.next();
-			
-			currAsteroid.update(deltaTime);
-		}
-		
-		
+		// To be able to manipulate the list when looping through it.
 		ArrayList<Asteroid> asteroidsTmp = new ArrayList<Asteroid>();
-		ArrayList<Asteroid> asteroidsToAdd = new ArrayList<Asteroid>();
-		Asteroid currAsteroidCheck;
 		asteroidsTmp.addAll(asteroids);
-		asteroidIterator = asteroids.listIterator();
-		while (asteroidIterator.hasNext()) {
-			currAsteroid = asteroidIterator.next();
-			boolean collision = false;
-			
-			asteroidsTmp = currAsteroid.detectCollision(asteroidsTmp);
-			
-			/*if(collision)
-			{
-					numAsteroids++;
-					
-					asteroidIterator.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2));
-					asteroidIterator.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2));
-					
-					//numAsteroids++;
-					//asteroidIterator.add(new Asteroid(currAsteroidCheck.position.x, currAsteroidCheck.position.y, currAsteroidCheck.objectSize/2));
-					//asteroidIterator.add(new Asteroid(currAsteroidCheck.position.x, currAsteroidCheck.position.y, currAsteroidCheck.objectSize/2));
-			
-					asteroidsToRemove.add(currAsteroid);
-					asteroidsToRemove.add(currAsteroidCheck);
-			}	
-			*/	
-			//}
-		}
 		
+		ArrayList<LaserBlast> blastsToRemove = new ArrayList<LaserBlast>();
+		
+		for (Asteroid asteroid : asteroids) {
+			for (LaserBlast blast : spaceship.blasts) {
+				Point3D blastOriginPoint = blast.origin.getOrigin();
+				if (blastOriginPoint.x >= 100 || blastOriginPoint.x <= -100 || blastOriginPoint.y >= 100 || blastOriginPoint.y <= -100) {
+					blastsToRemove.add(blast);
+				}
+				if (blast.detectCollision(asteroid)) {
+					asteroidsTmp.addAll(asteroid.breakAsteroid(asteroid));
+					asteroidsTmp.remove(asteroid);
+					blastsToRemove.add(blast);
+				}
+			}
+			// TODO: Optimize to not have to check every asteroid against every other asteroid.
+			if (asteroid.detectCollision(asteroids)) {
+				asteroidsTmp.addAll(asteroid.breakAsteroid(asteroid));
+				asteroidsTmp.remove(asteroid);
+			}
+		}
 		asteroids.removeAll(asteroids);
 		asteroids.addAll(asteroidsTmp);
-		/*
-
-		asteroidIterator = asteroidsToRemove.listIterator();
-		while (asteroidIterator.hasNext()) {
-			currAsteroid = asteroidIterator.next();
-			asteroids.remove(currAsteroid);
-		}*/
-		/*
-		asteroidIterator = asteroidsToAdd.iterator();
-		while (asteroidIterator.hasNext()) {
-			currAsteroid = asteroidIterator.next();
-			asteroids.add(currAsteroid);
-		}*/
-
+		spaceship.blasts.removeAll(blastsToRemove);
 		
 		background.update(deltaTime);
 	}
@@ -162,27 +153,13 @@ public class Prog2Game extends ApplicationAdapter {
 		
 		ModelMatrix.main.loadIdentityMatrix();
 		
-		// Display background.
 		background.display();
 		
 		spaceship.display();
 		
-		// Display asteroids.
-		Iterator<Asteroid> asteroidIterator = asteroids.iterator();
-		Asteroid currAsteroid;
-		while (asteroidIterator.hasNext()) {
-			currAsteroid = asteroidIterator.next();
-			
-			currAsteroid.display();
+		for (Asteroid asteroid : asteroids) {
+			asteroid.display();
 		}
-		
-		// Adds another spaceship, but local coords with the shitty collision makes it all weird.
-//		ModelMatrix.main.pushMatrix();
-		
-//		ModelMatrix.main.addTranslation(3.0f, 4.0f, 0.0f);
-//		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
-//		
-//		spaceship2.display();
 	}
 
 	@Override

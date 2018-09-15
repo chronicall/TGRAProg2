@@ -3,7 +3,6 @@ package tgra.prog2.game;
 import java.util.ArrayList;
 
 public class Asteroid {
-	// Will contain functions and variables for the asteroid object(s).
 	Point2D position;
 	private Vector2D motion;
 	float rotationAngle;
@@ -58,7 +57,6 @@ public class Asteroid {
 	
 	public void update(float deltaTime) {
 		// Reverses the direction of the asteroid if "colliding" with the edge of the window.
-		
 		if (this.position.x + this.objectSize >= 100 || this.position.x - this.objectSize <= -100) {
 			this.motion.x *= -1;
 		}
@@ -71,7 +69,7 @@ public class Asteroid {
 		this.rotationAngle 	+= rotationSpeed * deltaTime;
 		
 		if(this.invisTime > 0f) {
-			this.invisTime 	-= 0.5f;
+			this.invisTime -= 0.5f;
 		}
 	}
 		
@@ -88,86 +86,52 @@ public class Asteroid {
 		ModelMatrix.main.addRoatationZ(this.rotationAngle);
 		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
 		
-		GraphicsEnvironment.setColour(0.5f, 0.5f, 0.5f);
+		GraphicsEnvironment.setColour(0.0f, 0.5f, 0.5f);
 		CircleGraphic.drawSolidCircle();
 		
 		ModelMatrix.main.popMatrix();
 	}
 	
-	public ArrayList<Asteroid> detectCollision(ArrayList<Asteroid> asteroids)
-	{
-		boolean collision = false;
+	// Breaks up the asteroid passed into two smaller ones. The smallest size possible is 1.5f.
+	public ArrayList<Asteroid> breakAsteroid(Asteroid asteroid) {
 		ArrayList<Asteroid> asteroidsToAdd = new ArrayList<Asteroid>();
-		ArrayList<Asteroid> asteroidsToRm = new ArrayList<Asteroid>();
 		
-		if(this.invisTime > 0f) {
-			//System.out.println("invis");
-			return asteroids;
+		if (asteroid.objectSize > 1.5f) {
+	 		asteroidsToAdd.add(new Asteroid(
+					asteroid.position.x, asteroid.position.y, asteroid.objectSize/2, 
+					asteroid.motion.x + 15, asteroid.motion.y + 15
+				)
+			);	
+			asteroidsToAdd.add(new Asteroid(
+					asteroid.position.x, asteroid.position.y, asteroid.objectSize/2, 
+					asteroid.motion.x - 15, -asteroid.motion.y - 15
+				)
+			);
 		}
 		
-		for(Asteroid currAsteroid: asteroids) {
-			
-			if(currAsteroid == this || asteroidsToRm.contains(currAsteroid) || currAsteroid.invisTime > 0f) {
-				continue;
-			}	
-						
-			if (Math.pow(this.position.x - currAsteroid.position.x, 2) + Math.pow(this.position.y - currAsteroid.position.y, 2) 
-			 	<= Math.pow(currAsteroid.objectSize + this.objectSize, 2)) {
-				
-				collision = true;
-				
-				//System.out.println("x: " + ((this.position.x + this.objectSize) - (currAsteroid.position.x + currAsteroid.objectSize)));
-				//System.out.println("y: " + ((this.position.y + this.objectSize) - (currAsteroid.position.y + currAsteroid.objectSize)));
-				//System.out.println("object: "+ this.objectSize);
-				//System.out.println("object curr: "+ currAsteroid.objectSize);
-				
-				int i = 2;
-				
-				if(currAsteroid.objectSize > 1.5 && currAsteroid.objectSize >= this.objectSize) {
-					//System.out.println("add");
-					for(int j = 0; j<=i; j++) {
-						asteroidsToAdd.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2, 
-								currAsteroid.motion.x + 15*j, currAsteroid.motion.y + 15*j));	
-						asteroidsToAdd.add(new Asteroid(currAsteroid.position.x, currAsteroid.position.y, currAsteroid.objectSize/2, 
-								currAsteroid.motion.x- 15*j, -currAsteroid.motion.y - 15*j));	
-						
-					
-					}
-				}
-				
-				if(this.objectSize > 1.5 && currAsteroid.objectSize < this.objectSize) {
-					//numAsteroids++;
-					//asteroidsToAdd.add(new Asteroid(-this.position.x, this.position.y, this.objectSize/2, this.motion.x, this.motion.y));
-					//asteroidsToAdd.add(new Asteroid(-this.position.x, this.position.y, this.objectSize/2, this.motion.x, this.motion.y));
-					for(int j = 0; j<=i; j++) {
-						asteroidsToAdd.add(new Asteroid(-this.position.x, this.position.y, this.objectSize/2, 
-								15*j + this.motion.x, this.motion.y + 15*j));
-						asteroidsToAdd.add(new Asteroid(-this.position.x, this.position.y, this.objectSize/2, 
-								this.motion.x - 15*j, -this.motion.y - 15*j));
-					}
-				
-				}
+		return asteroidsToAdd;
+	}
+	
+	// TODO: Use a better collision algorithm..
+	public boolean detectCollision(ArrayList<Asteroid> asteroids)
+	{
+		if(this.invisTime > 0f) {
+			return false;
+		}
 		
-				asteroidsToRm.add(currAsteroid);
+		for(Asteroid asteroid: asteroids) {
+			// We don't want to check for collision against the same object.
+			if(asteroid == this) {
+				continue;
+			}
+			
+			float distance = (float)Math.pow(this.position.x - asteroid.position.x, 2) + (float)Math.pow(this.position.y - asteroid.position.y, 2);
+			
+			if (distance <= Math.pow(asteroid.objectSize + this.objectSize, 2)) {
+				return true;
 			}
 		}
 		
-		for(Asteroid a: asteroidsToAdd) {
-			asteroids.add(a);
-		}
-		
-		if(collision) {
-			asteroidsToRm.add(this);
-		}
-		
-		for(Asteroid a: asteroidsToRm) {
-			asteroids.remove(a);
-		}
-		
-		return asteroids;		
-	}
-	
-	public boolean intersects(Asteroid checkAsteroid) {
-		return false;
+		return false;		
 	}
 }

@@ -13,4 +13,8 @@ public class Point2D {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public Point2D add(Vector2D v) {
+		return new Point2D(this.x + v.x, this.y + v.y);
+	}
 }

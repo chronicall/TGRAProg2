@@ -2,8 +2,9 @@ package tgra.prog2.game;
 
 public class Star {
 	private float objectSize;
-	private Point2D position;
 	private int quarter;
+	
+	private Point2D position;
 	
 	public Star() {
 		this.position = new Point2D((float)Math.random() * 100 + 1, (float)Math.random() * 100 + 1);
@@ -31,6 +32,8 @@ public class Star {
 		// This needs to be uniform with every star in the sky, so need to have some
 		// factor that makes them move in a uniform way. Need to use the same coord system
 		// and move them by the same vector.
+		// TODO: Make it actually parallax by moving when the spaceship moves, in accordance
+		//		 to the direction moved by the spaceship.
 		if (this.position.x >= 100) {
 			this.position.x = -100;
 		}
@@ -43,7 +46,7 @@ public class Star {
 	
 	public void display() {
 		ModelMatrix.main.pushMatrix();
-
+		
 		ModelMatrix.main.addTranslation(position.x, position.y, 0.0f);
 		ModelMatrix.main.addScale(objectSize, objectSize, 1.0f);
 		GraphicsEnvironment.setShaderModelMatrix(ModelMatrix.main);
